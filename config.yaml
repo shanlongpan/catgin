@@ -1,0 +1,10 @@
+etcd_endpoints:
+  - "http://127.0.0.1:2377"
+  - "http://127.0.0.1:2378"
+  - "http://127.0.0.1:2379"
+log_dir: "/Users/danlongpan/goproject/catgin"  #"/Users/danlongpan/goproject/catgin"  "/var/log"
+log_name:
+  stat_log_file: "go_info"
+  error_log_file: "go_error"
+  panic_log_file: "go_panic"
+  stderr_panic_log_file: "go_Stderr_panic"

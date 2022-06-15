@@ -6,6 +6,7 @@
 package xlog
 
 import (
+	"github.com/shanlongpan/catgin/config"
 	"github.com/shanlongpan/catgin/consts"
 	"log"
 	"os"
@@ -29,7 +30,7 @@ func RewriteStderrFile() error {
 		return nil
 	}
 
-	stdErrFile, err := os.OpenFile(filepath.Join(consts.LogFileDir, consts.StderrPanicLogFile+consts.Suffix), os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	stdErrFile, err := os.OpenFile(filepath.Join(consts.LogFileDir, config.Conf.LogName.StderrPanicLogFile+consts.Suffix), os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
 		return err
 	}

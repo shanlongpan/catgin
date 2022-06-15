@@ -10,6 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
 	"github.com/rifflock/lfshook"
+	"github.com/shanlongpan/catgin/config"
 	"github.com/shanlongpan/catgin/consts"
 	"github.com/sirupsen/logrus"
 	"io"
@@ -30,17 +31,17 @@ func init() {
 
 	//显示调用函数
 	//Logger.SetReportCaller(true)
-	statLogWriter, err := getLogWriter(consts.StatLogFile)
+	statLogWriter, err := getLogWriter(config.Conf.LogName.StatLogFile)
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	errorLogWriter, err := getLogWriter(consts.ErrorLogFile)
+	errorLogWriter, err := getLogWriter(config.Conf.LogName.ErrorLogFile)
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	panicLogWriter, err := getLogWriter(consts.PanicLogFile)
+	panicLogWriter, err := getLogWriter(config.Conf.LogName.PanicLogFile)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -59,7 +60,7 @@ func init() {
 }
 
 func getLogWriter(logName string) (*rotatelogs.RotateLogs, error) {
-	fileName := path.Join(consts.LogFileDir, logName+consts.Suffix)
+	fileName := path.Join(config.Conf.LogDir, logName+consts.Suffix)
 	// 普通日志
 	_, err := os.OpenFile(fileName, os.O_APPEND|os.O_WRONLY|os.O_CREATE, os.ModeAppend)
 	if err != nil {

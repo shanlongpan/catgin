@@ -4,14 +4,13 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/shanlongpan/catgin/consts"
-	"github.com/shanlongpan/catgin/lib"
+	"github.com/shanlongpan/catgin/model/dao"
 	"github.com/shanlongpan/catgin/xlog"
-	"github.com/shanlongpan/micro-v3-pub/MicroV3Adapter"
-	"github.com/shanlongpan/micro-v3-pub/idl/grpc/microv3"
 	"math/rand"
-	"net/http"
 	"time"
 )
+
+var p dao.Product
 
 func call(ctx *gin.Context) {
 	rand.Seed(time.Now().UnixNano())
@@ -19,18 +18,24 @@ func call(ctx *gin.Context) {
 	uid := 122121
 
 	ctx.Set(consts.BalancingHashKey, fmt.Sprintf("%d", uid))
-	res, err := MicroV3Adapter.Call(lib.GetNewCtx(ctx), &microv3.CallRequest{
-		Name: fmt.Sprintf("小明%d", d),
-	})
+	ctx.JSON(200, d)
+}
 
+func insert(ctx *gin.Context) {
+	p.Migrate(ctx)
+	var insertData []*dao.Product
+	insertData = append(insertData, &dao.Product{
+		Code:  "1212",
+		Price: 12,
+	})
+	p.Insert(ctx, insertData)
+}
+
+func get(ctx *gin.Context) {
+	err, result := p.Select(ctx, nil)
 	if err != nil {
-		xlog.Errorln(ctx, err)
-		ctx.JSON(http.StatusOK, gin.H{
-			"msg": res.Msg,
-		})
+		xlog.Errorln(ctx, err.Error())
 	} else {
-		ctx.JSON(http.StatusOK, gin.H{
-			"msg": res.Msg,
-		})
+		ctx.JSON(200, result)
 	}
 }

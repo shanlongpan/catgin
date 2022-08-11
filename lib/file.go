@@ -32,4 +32,3 @@ func checkAndCreatePath(dirPath string) error {
 	}
 	return nil
 }
-

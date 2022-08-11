@@ -9,11 +9,16 @@ import (
 	"fmt"
 	"github.com/shanlongpan/micro-v3-pub/MicroV3Adapter"
 	"gopkg.in/yaml.v2"
+	"gorm.io/gorm"
 	"io/ioutil"
+	"k8s.io/client-go/kubernetes"
 	"log"
 )
 
 var Conf Config
+var DB *gorm.DB
+var LogFileDir = Conf.LogDir
+var K8sClient *kubernetes.Clientset
 
 type LogName struct {
 	StatLogFile        string `yaml:"stat_log_file"`

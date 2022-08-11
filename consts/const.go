@@ -5,10 +5,6 @@
 
 package consts
 
-import "github.com/shanlongpan/catgin/config"
-
-var LogFileDir = config.Conf.LogDir
-
 const DefaultTraceIdHeader = "trace_id"
 const BalancingHashKey = "hash_key"
 const (

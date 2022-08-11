@@ -18,7 +18,7 @@ func Recover(c *gin.Context) {
 		if r := recover(); r != nil {
 			//打印错误堆栈信息
 			msg := fmt.Sprintf("message %v stack: %+v", errorToString(r), string(debug.Stack()))
-			xlog.Errorln(c,msg)
+			xlog.Errorln(c, msg)
 
 			if gin.Mode() == gin.ReleaseMode {
 				msg = http.StatusText(http.StatusInternalServerError)

@@ -74,7 +74,7 @@ func getLogWriter(logName string) (*rotatelogs.RotateLogs, error) {
 	// Set rotatelogs
 	return rotatelogs.New(
 		// Split file name
-		path.Join(consts.LogFileDir, logName+"_%Y%m%d.log"),
+		path.Join(config.LogFileDir, logName+"_%Y%m%d.log"),
 		// Generate soft chain, point to the latest log file
 		rotatelogs.WithLinkName(fileName),
 		// Set maximum save time (7 days)

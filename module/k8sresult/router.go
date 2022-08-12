@@ -1,5 +1,10 @@
 package k8sresult
 
+/**
+*  @Author:Tristan
+*  @Date: 2022/8/12
+ */
+
 import (
 	"github.com/gin-gonic/gin"
 )

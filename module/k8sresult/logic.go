@@ -7,6 +7,7 @@ import (
 	"github.com/shanlongpan/catgin/xlog"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"net/http"
 )
 
 func get(ctx *gin.Context) {
@@ -14,7 +15,7 @@ func get(ctx *gin.Context) {
 	if err != nil {
 		panic(err.Error())
 	}
-	ctx.JSON(200, pods)
+	ctx.JSON(http.StatusOK, pods)
 }
 
 func getNameSpacePod(ctx *gin.Context) {
@@ -24,7 +25,7 @@ func getNameSpacePod(ctx *gin.Context) {
 	if err != nil {
 		xlog.Errorln(ctx, pods)
 	}
-	ctx.JSON(200, pods)
+	ctx.JSON(http.StatusOK, pods)
 }
 
 func getPod(ctx *gin.Context) {
@@ -34,15 +35,15 @@ func getPod(ctx *gin.Context) {
 	pod, err := config.K8sClient.CoreV1().Pods(namespace).Get(ctx, podName, metav1.GetOptions{})
 	if errors.IsNotFound(err) {
 
-		ctx.JSON(200, fmt.Sprintf("Pod %s in namespace %s not found", podName, namespace))
+		ctx.JSON(http.StatusOK, fmt.Sprintf("Pod %s in namespace %s not found", podName, namespace))
 	} else if statusError, isStatus := err.(*errors.StatusError); isStatus {
-		ctx.JSON(200, fmt.Sprintf("Error getting pod %s in namespace %s: %v", podName, namespace, statusError.ErrStatus.Message))
+		ctx.JSON(http.StatusOK, fmt.Sprintf("Error getting pod %s in namespace %s: %v", podName, namespace, statusError.ErrStatus.Message))
 
 	} else if err != nil {
 		panic(err.Error())
 	} else {
 
-		ctx.JSON(200, pod)
+		ctx.JSON(http.StatusOK, pod)
 	}
 
 }

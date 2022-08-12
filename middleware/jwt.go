@@ -1,5 +1,10 @@
 package middleware
 
+/**
+*  @Author:Tristan
+*  @Date: 2022/8/12
+ */
+
 import (
 	"context"
 	jwt "github.com/appleboy/gin-jwt/v2"

@@ -6,7 +6,6 @@
 package main
 
 import (
-	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
 	_ "github.com/shanlongpan/catgin/init"
 	"github.com/shanlongpan/catgin/middleware"
@@ -17,61 +16,16 @@ import (
 	"log"
 )
 
-var identityKey = "id"
-
-func helloHandler(c *gin.Context) {
-	claims := jwt.ExtractClaims(c)
-	user, _ := c.Get(identityKey)
-	c.JSON(200, gin.H{
-		"userID":   claims[identityKey],
-		"userName": user.(*User).UserName,
-		"text":     "Hello World.",
-	})
-}
-
-// User demo
-type User struct {
-	UserName  string
-	FirstName string
-	LastName  string
-}
-
 func main() {
 
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.New()
 
-	// 受信任的代理地址
+	// 可以设置受信任的代理地址
 	//err := r.SetTrustedProxies([]string{"192.168.1.2"})
 	//if err != nil {
 	//	log.Fatalln(err)
 	//}
-
-	// When you use jwt.New(), the function is already automatically called for checking,
-	// which means you don't need to call it again.
-	errInit := middleware.JwtMid.MiddlewareInit()
-
-	if errInit != nil {
-		log.Fatal("authMiddleware.MiddlewareInit() Error:" + errInit.Error())
-	}
-
-	r.POST("/login", middleware.JwtMid.LoginHandler)
-
-	// 未知路由
-	r.NoRoute(middleware.JwtMid.MiddlewareFunc(), func(c *gin.Context) {
-		claims := jwt.ExtractClaims(c)
-		log.Printf("NoRoute claims: %#v\n", claims)
-		c.JSON(404, gin.H{"code": "PAGE_NOT_FOUND", "message": "Page not found"})
-	})
-
-	auth := r.Group("/auth")
-	// Refresh time can be longer than token timeout
-	auth.GET("/refresh_token", middleware.JwtMid.RefreshHandler)
-
-	auth.Use(middleware.JwtMid.MiddlewareFunc())
-	{
-		auth.GET("/hello", helloHandler)
-	}
 
 	// 记录请求时间，响应时间
 	r.Use(xlog.LoggerToFile())
@@ -82,6 +36,9 @@ func main() {
 	r.Use(middleware.Recover)
 
 	admin.Router(r)
+
+	// 中间件校验登录，在这个方法之前的路由不会被校验登录
+	r.Use(middleware.CheckLogin())
 	helloworld.Router(r)
 	k8sresult.Router(r)
 

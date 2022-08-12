@@ -25,7 +25,7 @@ func Recover(c *gin.Context) {
 			}
 			// abort 终止后续接口调用，不加的话recover到异常后，还会继续执行接口里后续代码
 			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
-				"code": "500",
+				"code": http.StatusInternalServerError,
 				"msg":  msg,
 				"data": nil,
 			})

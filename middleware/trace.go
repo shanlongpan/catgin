@@ -30,7 +30,6 @@ func TrackingIdWithCustomizedHeader(head string) gin.HandlerFunc {
 			c.Header(head, tId)
 		}
 
-		// Set in Context
 		c.Set(head, tId)
 		c.Next()
 	}

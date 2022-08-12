@@ -1,12 +1,18 @@
 package helloworld
 
+/**
+*  @Author:Tristan
+*  @Date: 2022/8/12
+ */
+
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/shanlongpan/catgin/common"
 	"github.com/shanlongpan/catgin/consts"
 	"github.com/shanlongpan/catgin/model/dao"
-	"github.com/shanlongpan/catgin/xlog"
 	"math/rand"
+	"net/http"
 	"time"
 )
 
@@ -14,11 +20,12 @@ var p dao.Product
 
 func call(ctx *gin.Context) {
 	rand.Seed(time.Now().UnixNano())
-	d := rand.Intn(2000)
+	d := rand.Intn(http.StatusOK)
 	uid := 122121
 
 	ctx.Set(consts.BalancingHashKey, fmt.Sprintf("%d", uid))
-	ctx.JSON(200, d)
+	r := common.NewResult(ctx)
+	r.Success(d)
 }
 
 func insert(ctx *gin.Context) {
@@ -29,13 +36,17 @@ func insert(ctx *gin.Context) {
 		Price: 12,
 	})
 	p.Insert(ctx, insertData)
+	r := common.NewResult(ctx)
+	r.Success("ok")
 }
 
 func get(ctx *gin.Context) {
 	err, result := p.Select(ctx, nil)
 	if err != nil {
-		xlog.Errorln(ctx, err.Error())
+		r := common.NewResult(ctx)
+		r.Error(consts.RtnError, err.Error())
 	} else {
-		ctx.JSON(200, result)
+		r := common.NewResult(ctx)
+		r.Success(result)
 	}
 }

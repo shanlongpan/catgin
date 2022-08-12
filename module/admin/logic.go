@@ -1,38 +1,44 @@
+/**
+* @Author:Tristan
+* @Date: 2022/08/11 2:49 下午
+ */
+
 package admin
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
-	"math/rand"
-	"net/http"
-	"time"
+	"github.com/shanlongpan/catgin/common"
+	"github.com/shanlongpan/catgin/consts"
 )
 
-func loginEndpoint(c *gin.Context) {
-	//xlog.Logger.Infoln("admin")
-	rand.Seed(time.Now().UnixNano())
-	d := rand.Intn(2000)
-	time.Sleep(time.Duration(d) * time.Millisecond)
-	c.JSON(http.StatusOK, gin.H{
-		"msg": "shop.admin",
+type UserInfo struct {
+	Id       int    `json:"id"`
+	Email    string `json:"email"`
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+func login(ctx *gin.Context) {
+	var userInfo UserInfo
+	r := common.NewResult(ctx)
+	if ctx.ShouldBindJSON(&userInfo) != nil {
+		r.Error(consts.RtnError, "参数错误")
+		return
+	}
+	if userInfo.Username != "admin" || userInfo.Password != "123456" {
+		r.Error(consts.RtnError, "用户名或密码错误")
+		return
+	}
+
+	r.Success(gin.H{
+		"user":  "admin",
+		"token": "b2nt7cBKPTWVGEPi",
 	})
 }
 
-func submitEndpoint(c *gin.Context) {
-	//xlog.Logger.Infoln("submit")
-	d, _ := c.Params.Get("name")
-	fmt.Println(d[1])
-	c.JSON(http.StatusOK, gin.H{
-		"msg": "shop.submit",
-	})
+func logout(c *gin.Context) {
 }
-func readEndpoint(c *gin.Context) {
-	//xlog.Logger.Infoln("read")
-	go func() {
-		time.Sleep(10 * time.Second)
-		panic(1)
-	}()
-	c.JSON(http.StatusOK, gin.H{
-		"msg": "shop.read",
-	})
+
+func refreshToken(c *gin.Context) {
+
 }
